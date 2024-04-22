@@ -12,6 +12,8 @@
   "dependencies": {
     "@graphql-codegen/cli": "^5.0.2",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "@mantine/core": "^7.8.0",
+    "@mantine/dates": "^7.8.0",
     "@react-three/drei": "^9.102.6",
     "@react-three/fiber": "^8.15.19",
     "graphql": "^16.8.1",

@@ -1,9 +1,7 @@
-import Scene3d from './pages/Scene3d';
+import Scene3d from './Scene3d';
 
 const App = () => {
-  return (
-    <Scene3d />
-  );
+  return <Scene3d />;
 };
 
 export default App;
