@@ -1,7 +1,8 @@
-import { Args, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Query, Resolver } from '@nestjs/graphql';
 import { Message } from './message.entity';
 import { MessageService } from './messages.service';
 import { MessageCount } from './models/message-count.model';
+import { MessageCountByStatus } from './models/message-count-by-status.model';
 
 @Resolver(() => Message)
 export class MessageResolver {
@@ -23,6 +24,19 @@ export class MessageResolver {
     @Args('endTime', { type: () => Date }) endTime: Date,
   ) {
     return this.messageService.getTotalMessageCounts(
+      startTime.getTime(),
+      endTime.getTime(),
+    );
+  }
+
+  @Query(() => [MessageCountByStatus])
+  async messageCounts(
+    @Args('paraIds', { type: () => [Int], nullable: true }) paraIds: number[],
+    @Args('startTime', { type: () => Date }) startTime: Date,
+    @Args('endTime', { type: () => Date }) endTime: Date,
+  ): Promise<MessageCountByStatus[]> {
+    return this.messageService.countMessagesByStatus(
+      paraIds,
       startTime.getTime(),
       endTime.getTime(),
     );
