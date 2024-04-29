@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Message } from 'src/messages/message.entity';
 import { MessageModule } from 'src/messages/messages.module';
+import { ChannelModule } from 'src/channels/channels.module';
 
 const typeOrmConfig = async (
   config: ConfigService,
@@ -33,6 +34,7 @@ const typeOrmConfig = async (
       },
     }),
     MessageModule,
+    ChannelModule,
   ],
 })
 export class AppModule {}
