@@ -1,4 +1,5 @@
-# XCM Visualizator
+
+<img width="300" alt="XCM Visualizator logo" src="https://github.com/michaeldev5/xcm-visualizator/assets/79721475/ea4b6739-2112-4839-9cc7-2ccf58d68b4f">
 
 ## The first XCM Visualizator in the Polkadot ecosystem
 
