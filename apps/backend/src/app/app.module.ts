@@ -3,9 +3,12 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { Message } from 'src/messages/message.entity';
 import { MessageModule } from 'src/messages/messages.module';
+import { Asset, Message } from 'src/messages/message.entity';
+import { Channel } from 'src/channels/channel.entity';
 import { ChannelModule } from 'src/channels/channels.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from 'src/tasks/tasks.module';
 
 const typeOrmConfig = async (
   config: ConfigService,
@@ -16,11 +19,12 @@ const typeOrmConfig = async (
   username: config.get('DB_USER'),
   password: config.get('DB_PASS'),
   database: config.get('DB_NAME'),
-  entities: [Message],
+  entities: [Message, Asset, Channel],
 });
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -35,6 +39,7 @@ const typeOrmConfig = async (
     }),
     MessageModule,
     ChannelModule,
+    TasksModule,
   ],
 })
 export class AppModule {}

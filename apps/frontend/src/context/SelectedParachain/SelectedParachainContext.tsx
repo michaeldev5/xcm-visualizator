@@ -9,6 +9,8 @@ interface SelectedParachainContextType {
   toggleParachain: (parachain: SelectedParachain) => void;
   channelId?: number;
   setChannelId: (channelId: number) => void;
+  channelAlertOpen?: boolean;
+  setChannelAlertOpen: (open: boolean) => void;
   dateRange: [Date | null, Date | null];
   setDateRange: (dateRange: [Date | null, Date | null]) => void;
   primaryChannelColor?: string;
@@ -38,6 +40,7 @@ const SelectedParachainProvider = ({ children }: SelectedParachainProviderProps)
   const [secondaryChannelColor, setSecondaryChannelColor] = useState<string>();
   const [selectedChannelColor, setSelectedChannelColor] = useState<string>();
   const [parachainArrangement, setParachainArrangement] = useState<CountOption>(CountOption.ORIGIN);
+  const [channelAlertOpen, setChannelAlertOpen] = useState<boolean>(false);
 
   const toggleParachain = (parachain: SelectedParachain) => {
     if (parachains.includes(parachain)) {
@@ -57,6 +60,8 @@ const SelectedParachainProvider = ({ children }: SelectedParachainProviderProps)
         setDateRange,
         channelId,
         setChannelId,
+        channelAlertOpen,
+        setChannelAlertOpen,
         primaryChannelColor,
         setPrimaryChannelColor,
         highlightedChannelColor,

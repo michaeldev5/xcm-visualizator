@@ -1,6 +1,6 @@
-import { Canvas } from "@react-three/fiber";
-import { FC, ReactNode } from "react";
-import { PCFSoftShadowMap } from "three";
+import { Canvas } from '@react-three/fiber';
+import { FC, ReactNode } from 'react';
+import { PCFSoftShadowMap } from 'three';
 
 type Props = {
   children?: ReactNode;
@@ -11,11 +11,11 @@ const Canvas3D: FC<Props> = ({ children }) => {
     <Canvas
       gl={{
         antialias: true,
-        alpha: true,
+        alpha: true
       }}
       shadows={{
         enabled: true,
-        type: PCFSoftShadowMap,
+        type: PCFSoftShadowMap
       }}
       onCreated={({ gl }) => {
         gl.setPixelRatio(Math.min(window.devicePixelRatio, 2));
