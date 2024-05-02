@@ -17,7 +17,6 @@ const waitRandomSeconds = (min: number, max: number) => {
 export class TasksService {
   private readonly lastPageFile = './lastPage.txt';
   private readonly url = 'https://polkadot.subscan.io/xcm_transfer';
-  private readonly lockFile = './cron.lock';
   private aferId: string | undefined;
 
   constructor(
@@ -26,37 +25,15 @@ export class TasksService {
   ) {}
 
   onApplicationBootstrap() {
-    this.handleCron();
-  }
-
-  private async isLocked(): Promise<boolean> {
-    return fs.existsSync(this.lockFile);
-  }
-
-  private async createLock(): Promise<void> {
-    fs.writeFileSync(this.lockFile, 'LOCK', 'utf8');
-  }
-
-  private async removeLock(): Promise<void> {
-    fs.unlinkSync(this.lockFile);
+    //this.handleCron();
   }
 
   @Cron('0 16 * * *')
   async handleCron() {
-    if (await this.isLocked()) {
-      console.log('Cron job is already running. Exiting...');
-      return;
-    }
-
-    try {
-      await this.createLock();
-      console.log('Cron job started at 4 PM');
-      const lastPage = await this.getLastPageCrawled();
-      console.log(`Starting task from page ${lastPage}`);
-      await this.runTask(lastPage);
-    } finally {
-      await this.removeLock();
-    }
+    console.log('Cron job started at 4 PM');
+    const lastPage = await this.getLastPageCrawled();
+    console.log(`Starting task from page ${lastPage}`);
+    await this.runTask(lastPage);
   }
 
   private async runTask(startPage: number) {
@@ -68,6 +45,9 @@ export class TasksService {
 
     console.log(`Starting task from page ${startPage}`);
     for (let page = startPage; page <= totalPages; page++) {
+      if (page > 6000) {
+        break;
+      }
       console.log(`Fetching data for page ${page}`);
       const data = await this.fetchPage(page, this.aferId);
       if (data) {
@@ -92,7 +72,7 @@ export class TasksService {
   private async getLastPageCrawled(): Promise<number> {
     try {
       if (fs.existsSync(this.lastPageFile)) {
-        const lastPage = fs.readFileSync(this.lastPageFile, 'utf8');
+        //const lastPage = fs.readFileSync(this.lastPageFile, 'utf8');
         return 1;
       }
     } catch (error) {
