@@ -17,6 +17,8 @@ const waitRandomSeconds = (min: number, max: number) => {
 export class TasksService {
   private readonly lastPageFile = './lastPage.txt';
   private readonly url = 'https://polkadot.subscan.io/xcm_transfer';
+  private readonly lockFile = './cron.lock';
+  private aferId: string | undefined;
 
   constructor(
     @InjectRepository(Message)
@@ -24,15 +26,37 @@ export class TasksService {
   ) {}
 
   onApplicationBootstrap() {
-    // this.handleCron();
+    this.handleCron();
   }
 
-  // @Cron('0 16 * * *')
+  private async isLocked(): Promise<boolean> {
+    return fs.existsSync(this.lockFile);
+  }
+
+  private async createLock(): Promise<void> {
+    fs.writeFileSync(this.lockFile, 'LOCK', 'utf8');
+  }
+
+  private async removeLock(): Promise<void> {
+    fs.unlinkSync(this.lockFile);
+  }
+
+  @Cron('0 16 * * *')
   async handleCron() {
-    console.log('Cron job started at 4 PM');
-    const lastPage = await this.getLastPageCrawled();
-    console.log(`Starting task from page ${lastPage}`);
-    await this.runTask(lastPage);
+    if (await this.isLocked()) {
+      console.log('Cron job is already running. Exiting...');
+      return;
+    }
+
+    try {
+      await this.createLock();
+      console.log('Cron job started at 4 PM');
+      const lastPage = await this.getLastPageCrawled();
+      console.log(`Starting task from page ${lastPage}`);
+      await this.runTask(lastPage);
+    } finally {
+      await this.removeLock();
+    }
   }
 
   private async runTask(startPage: number) {
@@ -44,12 +68,12 @@ export class TasksService {
 
     console.log(`Starting task from page ${startPage}`);
     for (let page = startPage; page <= totalPages; page++) {
-      console.log('fdfdf');
-
       console.log(`Fetching data for page ${page}`);
-      const data = await this.fetchPage(page);
+      const data = await this.fetchPage(page, this.aferId);
       if (data) {
         console.log(`Data fetched for page ${page}, saving data...`);
+        console.log(data[data.length - 1]);
+        this.aferId = data[data.length - 1].unique_id;
         await this.saveData(data);
         console.log(
           `Data saved for page ${page}, updating last crawled page...`,
@@ -62,19 +86,19 @@ export class TasksService {
 
   private async saveLastPageCrawled(pageNumber: number): Promise<void> {
     console.log(`Saving last crawled page number: ${pageNumber}`);
-    fs.writeFileSync(this.lastPageFile, pageNumber.toString(), 'utf8');
+    //fs.writeFileSync(this.lastPageFile, pageNumber.toString(), 'utf8');
   }
 
   private async getLastPageCrawled(): Promise<number> {
     try {
       if (fs.existsSync(this.lastPageFile)) {
         const lastPage = fs.readFileSync(this.lastPageFile, 'utf8');
-        return parseInt(lastPage, 10);
+        return 1;
       }
     } catch (error) {
       console.error('Error reading the last page file:', error);
     }
-    return 0;
+    return 1;
   }
 
   private async fetchTotalEntries(): Promise<number> {
@@ -102,11 +126,17 @@ export class TasksService {
     return 0;
   }
 
-  private async fetchPage(pageNumber: number): Promise<any[]> {
-    const baseUrl = `${this.url}?page=`;
+  private async fetchPage(
+    pageNumber: number,
+    afterId?: string,
+  ): Promise<any[]> {
+    let url = `${this.url}?page=${pageNumber}`;
+    if (pageNumber >= 1 && afterId) {
+      url = `${this.url}?page=${pageNumber}&afterId=${afterId}`;
+    }
     try {
-      console.log(`Fetching URL: ${baseUrl}${pageNumber}`);
-      const response = await axios.get(`${baseUrl}${pageNumber}`, {
+      console.log(`Fetching URL: ${url}`);
+      const response = await axios.get(url, {
         headers: { 'User-Agent': '_' },
       });
       const htmlContent = response.data;
@@ -116,9 +146,11 @@ export class TasksService {
       if (element) {
         const jsonData = JSON.parse(element.textContent);
         return jsonData.props.pageProps.data.list;
+      } else {
+        console.log('Element not found. No data to fetch.');
       }
     } catch (error) {
-      console.error(`Error fetching page ${pageNumber}:`, error);
+      console.error(`Error fetching page ${pageNumber}:`);
     }
     return null;
   }
