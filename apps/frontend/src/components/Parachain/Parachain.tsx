@@ -131,6 +131,7 @@ const Parachain: React.FC<Props> = ({ name, index, isSelected, onClick, scale })
         color="white"
         anchorX="center"
         anchorY="middle"
+        font="https://cdn.jsdelivr.net/npm/roboto-regular-woff@0.7.1/Roboto-Regular.woff"
       >
         {name}
       </Text>
