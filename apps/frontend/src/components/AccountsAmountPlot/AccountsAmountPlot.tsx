@@ -46,7 +46,7 @@ const AccountsAmountPlot: FC<Props> = ({ counts }) => {
       formatter: function () {
         // Assuming you want to show the item's id (or a hash of it) in the tooltip
         // Here, simply using the item's name (id) as an example. Replace or modify according to your hash generation logic
-        return `ID (Hash): <b>${this.point.name}</b><br>Count: <b>${(this.point as any).value}</b>`;
+        return `ID (Hash): <b>${this.point.name.startsWith('0x') ? this.point.name : '0x' + this.point.name}</b><br>Count: <b>${(this.point as any).value}</b>`;
       }
     },
     plotOptions: {

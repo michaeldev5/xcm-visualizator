@@ -67,3 +67,7 @@ h1 {
   flex: 1;
   flex-grow: 1 !important;
 }
+
+.recharts-tooltip-wrapper {
+  z-index: 1000;
+}
