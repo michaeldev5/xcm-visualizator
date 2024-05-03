@@ -3,6 +3,10 @@ import { prodRelayPolkadot } from '@polkadot/apps-config/endpoints';
 
 export const getParachainId = (parachain: SelectedParachain): number => {
   if (parachain === 'Polkadot') return 0;
+
+  // Special case for Polkadex
+  if (parachain === 'Polkadex') 2040;
+
   const paraId = prodRelayPolkadot.linked?.find(node => node.text === parachain)?.paraId;
   if (!paraId) throw new Error(`Parachain ${parachain} not found`);
   return paraId;

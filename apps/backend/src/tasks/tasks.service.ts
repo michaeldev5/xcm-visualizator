@@ -45,7 +45,7 @@ export class TasksService {
 
     console.log(`Starting task from page ${startPage}`);
     for (let page = startPage; page <= totalPages; page++) {
-      if (page > 6000) {
+      if (page > 1000) {
         break;
       }
       console.log(`Fetching data for page ${page}`);
