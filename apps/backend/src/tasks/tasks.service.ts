@@ -25,10 +25,10 @@ export class TasksService {
   ) {}
 
   onApplicationBootstrap() {
-    //this.handleCron();
+    this.handleCron();
   }
 
-  @Cron('0 16 * * *')
+  // @Cron('0 16 * * *')
   async handleCron() {
     console.log('Cron job started at 4 PM');
     const lastPage = await this.getLastPageCrawled();
@@ -45,9 +45,9 @@ export class TasksService {
 
     console.log(`Starting task from page ${startPage}`);
     for (let page = startPage; page <= totalPages; page++) {
-      if (page > 1000) {
-        break;
-      }
+      // if (page > 1000) {
+      //   break;
+      // }
       console.log(`Fetching data for page ${page}`);
       const data = await this.fetchPage(page, this.aferId);
       if (data) {
