@@ -25,7 +25,7 @@ export class TasksService {
   ) {}
 
   onApplicationBootstrap() {
-    this.handleCron();
+    //this.handleCron();
   }
 
   // @Cron('0 16 * * *')

@@ -155,7 +155,9 @@ export class MessageService {
     return data.map((d) => ({
       paraId: d.paraId ? parseInt(d.paraId, 10) : undefined, // Handle absence of paraId when paraIds is empty
       date: d.date,
-      messageCount: parseInt(d.message_count, 10),
+      messageCount:
+        parseInt(d.message_count_success, 10) +
+        parseInt(d.message_count_failed, 10),
       messageCountSuccess: parseInt(d.message_count_success, 10),
       messageCountFailed: parseInt(d.message_count_failed, 10),
     }));
