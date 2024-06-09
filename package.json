@@ -15,5 +15,5 @@
     "run:fe": "pnpm --filter=frontend dev",
     "run:be": "pnpm --filter=backend start:dev"
   },
-  "packageManager": "pnpm@8.5.1"
+  "packageManager": "pnpm@9.1.1"
 }
